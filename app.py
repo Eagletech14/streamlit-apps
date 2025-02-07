@@ -239,7 +239,10 @@ def main():
             if not data.empty:
                 price_data[sym] = data["Close"]
         if price_data:
-            price_df = pd.DataFrame(price_data)
+            if isinstance(price_data, dict):
+    price_df = pd.DataFrame(price_data, index=[0])  # Forces a single-row DataFrame
+else:
+    price_df = pd.DataFrame(price_data)
             corr_matrix = price_df.corr()
             st.write("### Correlation Matrix", corr_matrix)
             heatmap_fig = go.Figure(data=go.Heatmap(
