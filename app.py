@@ -1,6 +1,3 @@
-Below is the modified code that replaces the pre-defined list of Forex pairs with a manual text input. Now you can enter any ticker (in the correct format, e.g., `"EURUSD=X"`) in the sidebar.
-
-```python
 import streamlit as st
 import yfinance as yf
 import plotly.graph_objs as go
@@ -321,13 +318,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-```
-
-### What Changed:
-- **Manual Ticker Input:**  
-  Instead of using a pre-defined dictionary of pairs, a text input field (`st.sidebar.text_input`) has been added where you can manually enter the desired Forex pair ticker (e.g., `"EURUSD=X"`).
-
-- **Subheader Update:**  
-  The subheader now directly displays the manually entered ticker.
-
-Feel free to further adjust or extend the code as needed!
