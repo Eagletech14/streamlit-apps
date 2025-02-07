@@ -229,20 +229,43 @@ def main():
     # Forex Correlation Analysis
     # ------------------------------
 
-    st.markdown("## Forex Pair Correlation Analysis")
+def fetch_data(ticker, period, interval):
+    try:
+        data = yf.download(ticker, period=period, interval=interval)
+        if not data.empty:
+            data.index = pd.to_datetime(data.index)
+        return data
+    except Exception as e:
+        st.error(f"Error fetching data for {ticker}: {e}")
+        return pd.DataFrame()
+
+def main():
+    st.title("Forex Market Visualizer")
+    ticker = st.sidebar.text_input("Forex Pair Symbol", value="EURUSD=X")
+    period = st.sidebar.selectbox("Data Period", ["1d", "5d", "1mo", "3mo", "6mo", "1y", "2y", "5y", "10y", "max"], index=5)
+    interval = st.sidebar.selectbox("Data Interval", ["1m", "5m", "15m", "30m", "60m", "90m", "1h", "1d", "5d", "1wk", "1mo", "3mo"], index=7)
+    
+    df = fetch_data(ticker, period, interval)
+    if df.empty:
+        st.error("No data fetched. Check the Forex pair symbol or settings.")
+        return
+    
     symbols_input = st.text_input("Enter multiple Forex pair symbols separated by commas", value="EURUSD=X,GBPUSD=X,USDJPY=X")
     symbols = [s.strip() for s in symbols_input.split(",") if s.strip()]
+    
     if symbols:
         price_data = {}
         for sym in symbols:
             data = fetch_data(sym, period, interval)
             if not data.empty:
                 price_data[sym] = data["Close"]
+        
         if price_data:
-            if isinstance(price_data, dict):
-    price_df = pd.DataFrame(price_data, index=[0])  # Forces a single-row DataFrame
-else:
-    price_df = pd.DataFrame(price_data)
+            price_df = pd.DataFrame(price_data)
+            if price_df.empty:
+                st.error("No valid data available for correlation analysis.")
+                return
+            
             corr_matrix = price_df.corr()
             st.write("### Correlation Matrix", corr_matrix)
             heatmap_fig = go.Figure(data=go.Heatmap(
