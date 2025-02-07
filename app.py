@@ -1,3 +1,6 @@
+Below is the modified code that replaces the pre-defined list of Forex pairs with a manual text input. Now you can enter any ticker (in the correct format, e.g., `"EURUSD=X"`) in the sidebar.
+
+```python
 import streamlit as st
 import yfinance as yf
 import plotly.graph_objs as go
@@ -82,16 +85,8 @@ def main():
     # ---------------------------
     st.sidebar.header("Chart Configuration")
 
-    # Forex Pair Selection
-    forex_pairs = {
-        "EUR/USD": "EURUSD=X",
-        "GBP/USD": "GBPUSD=X",
-        "USD/JPY": "USDJPY=X",
-        "AUD/USD": "AUDUSD=X",
-        "USD/CHF": "USDCHF=X"
-    }
-    selected_pair_name = st.sidebar.selectbox("Select Forex Pair", list(forex_pairs.keys()))
-    selected_pair = forex_pairs[selected_pair_name]
+    # Forex Pair Manual Input (no pre-defined list)
+    selected_pair = st.sidebar.text_input("Enter Forex Pair Ticker (e.g., EURUSD=X)", "EURUSD=X")
 
     # Date Range Selection
     start_date = st.sidebar.date_input("Start Date", pd.to_datetime("2023-01-01"))
@@ -147,9 +142,8 @@ def main():
     # ---------------------------
     # Data Fetching
     # ---------------------------
-    st.subheader(f"Fetching data for {selected_pair_name}...")
+    st.subheader(f"Fetching data for {selected_pair}...")
     with st.spinner("Downloading data..."):
-        # For forex pairs, yfinance tickers are in the form "EURUSD=X", etc.
         df = yf.download(selected_pair, start=start_date, end=end_date, interval=selected_interval)
     if df.empty:
         st.error("No data fetched. Please check your ticker, date range, or interval settings.")
@@ -225,7 +219,7 @@ def main():
             )
 
     fig.update_layout(
-        title=f"{selected_pair_name} Price Chart ({selected_interval} interval)",
+        title=f"{selected_pair} Price Chart ({selected_interval} interval)",
         xaxis_title="Time",
         yaxis_title="Price",
         xaxis_rangeslider_visible=False,
@@ -327,3 +321,13 @@ def main():
 
 if __name__ == "__main__":
     main()
+```
+
+### What Changed:
+- **Manual Ticker Input:**  
+  Instead of using a pre-defined dictionary of pairs, a text input field (`st.sidebar.text_input`) has been added where you can manually enter the desired Forex pair ticker (e.g., `"EURUSD=X"`).
+
+- **Subheader Update:**  
+  The subheader now directly displays the manually entered ticker.
+
+Feel free to further adjust or extend the code as needed!
