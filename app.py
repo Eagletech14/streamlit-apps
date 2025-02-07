@@ -150,9 +150,7 @@ def main():
     st.subheader(f"Fetching data for {selected_pair_name}...")
     with st.spinner("Downloading data..."):
         # For forex pairs, yfinance tickers are in the form "EURUSD=X", etc.
-        df = fetch_data(selected_pair, start_date, end_date, selected_interval)
-    if df is None:
-        st.stop()
+        df = yf.download(selected_pair, start=start_date, end=end_date, interval=selected_interval)
     if df.empty:
         st.error("No data fetched. Please check your ticker, date range, or interval settings.")
         return
